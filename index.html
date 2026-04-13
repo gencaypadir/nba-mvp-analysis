@@ -124,26 +124,19 @@
           <div class="method-step">
             <div class="step-num">4</div>
             <div class="step-body">
-              <h3>Team Strength</h3>
-              <p>We calculated each team's win percentage using the actual game results in the dataset. This provides a straightforward measure of how good each team was during the period covered.</p>
+              <h3>Strength of Schedule (SOS)</h3>
+              <p>We calculated each team's win percentage from actual game results in the dataset, then used those win percentages to measure schedule difficulty. For each team, we averaged the win percentages of every opponent they faced. A higher number means that team played against stronger opponents on average, while a lower number means an easier schedule.</p>
             </div>
           </div>
           <div class="method-step">
             <div class="step-num">5</div>
-            <div class="step-body">
-              <h3>Strength of Schedule (SOS)</h3>
-              <p>For each team, we averaged the win percentages of every opponent they faced. A higher number means that team played against stronger opponents on average, while a lower number means an easier schedule.</p>
-            </div>
-          </div>
-          <div class="method-step">
-            <div class="step-num">6</div>
             <div class="step-body">
               <h3>SOS Adjustment (15% Weight)</h3>
               <p>We divided each team's SOS by the league average SOS to get a ratio (the "SOS factor"). A team with a tougher-than-average schedule gets a factor above 1.0, while an easier schedule produces a factor below 1.0. We then blended this factor with a neutral value of 1.0 using a 15% weight: <strong>multiplier = 0.15 × SOS_factor + 0.85</strong>. This means 85% of the score stays untouched and only 15% is influenced by schedule difficulty. For example, a player on Toronto (hardest schedule, SOS factor ~1.09) gets roughly a 1.4% boost, while a player on New York (easiest schedule, SOS factor ~0.92) receives about a 1.2% penalty. The adjustment is deliberately small so it nudges scores without overpowering the raw stats.</p>
             </div>
           </div>
           <div class="method-step">
-            <div class="step-num">7</div>
+            <div class="step-num">6</div>
             <div class="step-body">
               <h3>Minutes Adjustment (15% Weight)</h3>
               <p>We calculated each player's average minutes per game and divided it by their team's average minutes per player to get a "minutes factor." Starters who play 36 minutes on a team averaging 24 per player get a factor around 1.5, while a bench player at 12 minutes gets a factor around 0.5. Like the SOS adjustment, we blended this with a 15% weight: <strong>multiplier = 0.15 × MP_factor + 0.85</strong>. This gives starters a noticeable boost (a factor of 1.5 translates to roughly a 7.5% increase) and applies a similar penalty to low-minute players. The logic is simple: players who are on the court more carry greater responsibility and their stats reflect a larger role on their team.</p>
@@ -273,11 +266,7 @@
             <h3>Context adjustments reveal hidden value</h3>
             <p>The SOS and minutes adjustments, while deliberately subtle (15% weight each), meaningfully reshaped the rankings. Players like Cade Cunningham and Kyrie Irving saw some of the largest boosts (+6.5 and +6.6 points respectively) because they logged heavy starter minutes on their teams while facing above-average schedules. Meanwhile, players on teams with easier opponents saw smaller gains. These adjustments ensure that a dominant stat line against weak competition is valued differently than one earned against playoff-caliber teams, and that a starter carrying 36 minutes of responsibility is distinguished from a role player putting up numbers in limited action.</p>
           </div>
-          <div class="conclusion-card">
-            <div class="conclusion-num">04</div>
-            <h3>Wembanyama is the most unique player in the league</h3>
-            <p>Victor Wembanyama's percentile profile is unlike any other candidate: 100th percentile in blocks, 98th in rebounds, yet below 80th in shooting efficiency. No existing MVP archetype maps cleanly onto him. As he develops his shooting, his composite score will likely surge. The data suggests he is already a top-5 player statistically, despite being only in his second season.</p>
-          </div>
+
         </div>
         <div class="future-work">
           <h3>Limitations &amp; Future Work</h3>

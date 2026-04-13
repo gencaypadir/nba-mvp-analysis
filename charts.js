@@ -1,11 +1,12 @@
 /* =============================================
    charts.js — DS4200 NBA MVP Project
-   5 D3 Visualizations:
+   D3 Visualizations:
    1. Horizontal bar chart (Top 15 Final Score)
    2. Radar chart (Top 5 candidate profiles)
-   3. Scatter plot (Volume vs Efficiency)
-   4. Line chart (Season consistency)
-   5. Heatmap (Percentile breakdown)
+   3. Scatter plot — NOW IN ALTAIR (see scatter_altair.html)
+   4. Dumbbell chart (Raw vs Adjusted rankings)
+   5. Line chart (Season consistency)
+   6. Heatmap (Percentile breakdown)
    ============================================= */
 
 const COLORS = {
@@ -294,134 +295,182 @@ function drawRadar() {
 }
 
 /* =============================================
-   VIZ 3: SCATTER PLOT (D3)
-   Volume vs Efficiency
+   VIZ 3: SCATTER PLOT — ALTAIR (embedded)
+   Fetches scatter_altair.html and injects it
    ============================================= */
 function drawScatter() {
   const el = document.getElementById('scatter-chart');
   if (!el) return;
 
-  const margin = { top: 20, right: 30, bottom: 60, left: 60 };
-  const W = Math.min(el.offsetWidth || 900, 960) - margin.left - margin.right;
-  const H = 440;
+  fetch('scatter_altair.html')
+    .then(res => res.text())
+    .then(html => {
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '100%';
+      iframe.style.height = '520px';
+      iframe.style.border = 'none';
+      iframe.style.background = 'transparent';
+      el.appendChild(iframe);
+      iframe.contentDocument.open();
+      iframe.contentDocument.write(html);
+      iframe.contentDocument.close();
+    })
+    .catch(err => {
+      el.innerHTML = '<p style="color:#8A8D93;">Could not load scatter chart.</p>';
+      console.error('Scatter load error:', err);
+    });
+}
 
-  const svg = d3.select('#scatter-chart').append('svg')
+/* =============================================
+   VIZ 4: DUMBBELL CHART (D3)
+   Raw Composite vs Final Score
+   ============================================= */
+function drawDumbbell() {
+  const el = document.getElementById('dumbbell-chart');
+  if (!el) return;
+
+  const margin = { top: 30, right: 40, bottom: 50, left: 220 };
+  const W = Math.min(el.offsetWidth || 900, 900) - margin.left - margin.right;
+  const H = TOP15.length * 38;
+
+  const svg = d3.select('#dumbbell-chart').append('svg')
     .attr('viewBox', `0 0 ${W + margin.left + margin.right} ${H + margin.top + margin.bottom}`)
     .attr('preserveAspectRatio', 'xMinYMid meet');
 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
+  const data = [...TOP15].sort((a, b) => a.Final_Score - b.Final_Score);
+
+  const allValues = data.flatMap(d => [d.Composite_pctl, d.Final_Score]);
   const x = d3.scaleLinear()
-    .domain([d3.min(SCATTER_DATA, d => d.FGA) - 1, d3.max(SCATTER_DATA, d => d.FGA) + 1])
+    .domain([d3.min(allValues) - 3, d3.max(allValues) + 3])
     .range([0, W]);
-  const y = d3.scaleLinear()
-    .domain([d3.min(SCATTER_DATA, d => d['FG%']) - 0.02, d3.max(SCATTER_DATA, d => d['FG%']) + 0.02])
-    .range([H, 0]);
-  const r = d3.scaleSqrt()
-    .domain([d3.min(SCATTER_DATA, d => d.PTS), d3.max(SCATTER_DATA, d => d.PTS)])
-    .range([3, 18]);
 
-  // Grid
-  g.append('g').call(d3.axisLeft(y).ticks(6).tickSize(-W).tickFormat(''))
+  const y = d3.scaleBand()
+    .domain(data.map(d => d.Player))
+    .range([H, 0])
+    .padding(0.3);
+
+  // Grid lines
+  g.append('g').attr('class', 'grid')
+    .call(d3.axisBottom(x).ticks(6).tickSize(-H).tickFormat(''))
+    .attr('transform', `translate(0,${H})`)
     .selectAll('line').style('stroke', COLORS.border).style('stroke-dasharray', '3,4');
-  g.append('g').attr('transform', `translate(0,${H})`)
-    .call(d3.axisBottom(x).ticks(8).tickSize(-H).tickFormat(''))
-    .selectAll('line').style('stroke', COLORS.border).style('stroke-dasharray', '3,4');
-  g.selectAll('.domain').remove();
+  g.select('.grid .domain').remove();
 
-  // Dots
-  const top10Names = TOP15.slice(0, 10).map(d => d.Player);
-  
-  // Gray dots first
-  g.selectAll('.dot-gray').data(SCATTER_DATA.filter(d => !d.Top10))
-    .enter().append('circle')
-    .attr('cx', d => x(d.FGA))
-    .attr('cy', d => y(d['FG%']))
-    .attr('r', d => r(d.PTS))
-    .attr('fill', 'rgba(255,255,255,0.07)')
-    .attr('stroke', 'rgba(255,255,255,0.1)')
-    .attr('stroke-width', 0.5);
+  // Connecting lines
+  const lines = g.selectAll('.dumbbell-line').data(data).enter().append('line')
+    .attr('x1', d => x(d.Composite_pctl))
+    .attr('x2', d => x(d.Composite_pctl))
+    .attr('y1', d => y(d.Player) + y.bandwidth() / 2)
+    .attr('y2', d => y(d.Player) + y.bandwidth() / 2)
+    .attr('stroke', COLORS.muted)
+    .attr('stroke-width', 2)
+    .attr('stroke-opacity', 0.5);
 
-  // Red top10 dots
-  const topDots = g.selectAll('.dot-top').data(SCATTER_DATA.filter(d => d.Top10))
-    .enter().append('circle')
-    .attr('cx', d => x(d.FGA))
-    .attr('cy', d => y(d['FG%']))
-    .attr('r', d => r(d.PTS))
-    .attr('fill', d => PLAYER_COLORS[d.Player] || COLORS.red)
-    .attr('fill-opacity', 0.85)
+  // Animate lines extending
+  lines.transition().duration(600).delay((d, i) => i * 40)
+    .attr('x2', d => x(d.Final_Score));
+
+  // Raw composite dots (blue)
+  g.selectAll('.dot-raw').data(data).enter().append('circle')
+    .attr('cx', d => x(d.Composite_pctl))
+    .attr('cy', d => y(d.Player) + y.bandwidth() / 2)
+    .attr('r', 0)
+    .attr('fill', '#457b9d')
     .attr('stroke', '#fff')
     .attr('stroke-width', 1)
-    .style('cursor', 'pointer');
+    .style('cursor', 'pointer')
+    .transition().duration(400).delay((d, i) => i * 40)
+    .attr('r', 7);
 
-  // Labels for top 10
-  g.selectAll('.dot-label').data(SCATTER_DATA.filter(d => d.Top10))
-    .enter().append('text')
-    .attr('x', d => x(d.FGA) + r(d.PTS) + 4)
-    .attr('y', d => y(d['FG%']) + 4)
-    .text(d => d.Player.split(' ').slice(-1)[0])
-    .style('fill', d => PLAYER_COLORS[d.Player] || COLORS.text)
-    .style('font-family', FONT_MONO)
-    .style('font-size', '10px');
+  // Final score dots (red/gold)
+  g.selectAll('.dot-final').data(data).enter().append('circle')
+    .attr('cx', d => x(d.Final_Score))
+    .attr('cy', d => y(d.Player) + y.bandwidth() / 2)
+    .attr('r', 0)
+    .attr('fill', d => d.Player === 'Nikola Jokić' ? COLORS.gold : COLORS.red)
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 1)
+    .style('cursor', 'pointer')
+    .transition().duration(400).delay((d, i) => i * 40 + 200)
+    .attr('r', 7);
 
-  // Axes
-  g.append('g').attr('transform', `translate(0,${H})`)
-    .call(d3.axisBottom(x).ticks(8))
-    .selectAll('text').style('fill', COLORS.muted).style('font-family', FONT_MONO).style('font-size', '11px');
-  g.append('g').call(d3.axisLeft(y).ticks(6).tickFormat(d => (d * 100).toFixed(0) + '%'))
-    .selectAll('text').style('fill', COLORS.muted).style('font-family', FONT_MONO).style('font-size', '11px');
-
-  // Axis labels
-  g.append('text').attr('x', W/2).attr('y', H + 48)
-    .attr('text-anchor', 'middle').text('Field Goal Attempts per Game')
-    .style('fill', COLORS.dim).style('font-family', FONT_MONO).style('font-size', '10px')
-    .style('text-transform', 'uppercase').style('letter-spacing', '0.1em');
-  g.append('text').attr('transform', 'rotate(-90)').attr('x', -H/2).attr('y', -48)
-    .attr('text-anchor', 'middle').text('Field Goal Percentage')
-    .style('fill', COLORS.dim).style('font-family', FONT_MONO).style('font-size', '10px')
-    .style('text-transform', 'uppercase').style('letter-spacing', '0.1em');
-
-  // Tooltip on all dots
-  function addTooltip(sel) {
-    sel.on('mouseover', function(event, d) {
-      d3.select(this).attr('stroke-width', 2).attr('stroke', COLORS.gold);
-      showTooltip(
-        `<div class="tt-name">${d.Player}</div>` +
-        `Team: ${d.Tm}<br>` +
-        `FGA/game: ${d.FGA}<br>` +
-        `FG%: ${(d['FG%'] * 100).toFixed(1)}%<br>` +
-        `PPG: ${d.PTS}<br>` +
-        `Final Score: ${d.Final_Score}`,
-        event
-      );
+  // Delta labels (show change)
+  g.selectAll('.delta-label').data(data).enter().append('text')
+    .attr('x', d => x(Math.max(d.Composite_pctl, d.Final_Score)) + 14)
+    .attr('y', d => y(d.Player) + y.bandwidth() / 2 + 4)
+    .text(d => {
+      const delta = d.Final_Score - d.Composite_pctl;
+      return (delta >= 0 ? '+' : '') + delta.toFixed(1);
     })
-    .on('mousemove', moveTooltip)
-    .on('mouseout', function(event, d) {
-      d3.select(this).attr('stroke-width', d.Top10 ? 1 : 0.5).attr('stroke', d.Top10 ? '#fff' : 'rgba(255,255,255,0.1)');
-      hideTooltip();
-    });
-  }
+    .style('fill', d => d.Final_Score >= d.Composite_pctl ? '#4CAF50' : '#EF5350')
+    .style('font-family', FONT_MONO)
+    .style('font-size', '10px')
+    .style('opacity', 0)
+    .transition().duration(400).delay((d, i) => i * 40 + 500)
+    .style('opacity', 1);
 
-  g.selectAll('circle').call(addTooltip);
+  // Player labels
+  g.selectAll('.player-label').data(data).enter().append('text')
+    .attr('x', -8)
+    .attr('y', d => y(d.Player) + y.bandwidth() / 2 + 4)
+    .attr('text-anchor', 'end')
+    .text(d => d.Player)
+    .style('fill', d => d.Player === 'Nikola Jokić' ? COLORS.gold : COLORS.text)
+    .style('font-family', FONT_BODY)
+    .style('font-size', '13px')
+    .style('font-weight', d => d.Player === 'Nikola Jokić' ? '600' : '400');
 
-  // Size legend
-  const legendData = [5, 15, 25, 35];
-  const lx = W - 110, ly = 20;
-  g.append('text').attr('x', lx).attr('y', ly - 6)
-    .text('Bubble = PPG')
-    .style('fill', COLORS.dim).style('font-family', FONT_MONO).style('font-size', '9px')
-    .style('text-transform','uppercase').style('letter-spacing','0.1em');
-  legendData.forEach((v, i) => {
-    g.append('circle').attr('cx', lx + i * 28 + 10).attr('cy', ly + 14)
-      .attr('r', r(v)).attr('fill', 'rgba(255,255,255,0.12)').attr('stroke', COLORS.border);
-    g.append('text').attr('x', lx + i * 28 + 10).attr('y', ly + 36)
-      .attr('text-anchor', 'middle').text(v)
-      .style('fill', COLORS.dim).style('font-family', FONT_MONO).style('font-size', '9px');
+  // X axis
+  g.append('g').attr('transform', `translate(0,${H})`)
+    .call(d3.axisBottom(x).ticks(6).tickFormat(d => d.toFixed(0)))
+    .selectAll('text').style('fill', COLORS.muted).style('font-family', FONT_MONO).style('font-size', '11px');
+
+  // X axis label
+  g.append('text')
+    .attr('x', W / 2).attr('y', H + 42)
+    .attr('text-anchor', 'middle')
+    .style('fill', COLORS.dim)
+    .style('font-family', FONT_MONO)
+    .style('font-size', '10px')
+    .style('text-transform', 'uppercase')
+    .style('letter-spacing', '0.12em')
+    .text('Score');
+
+  // Legend
+  const legendX = W - 260, legendY = -18;
+  // Raw dot
+  g.append('circle').attr('cx', legendX).attr('cy', legendY).attr('r', 6).attr('fill', '#457b9d');
+  g.append('text').attr('x', legendX + 12).attr('y', legendY + 4)
+    .text('Raw Composite').style('fill', COLORS.muted).style('font-family', FONT_MONO).style('font-size', '10px');
+  // Final dot
+  g.append('circle').attr('cx', legendX + 140).attr('cy', legendY).attr('r', 6).attr('fill', COLORS.red);
+  g.append('text').attr('x', legendX + 152).attr('y', legendY + 4)
+    .text('Final Score').style('fill', COLORS.muted).style('font-family', FONT_MONO).style('font-size', '10px');
+
+  // Hover interactions
+  g.selectAll('circle').on('mouseover', function(event, d) {
+    if (!d || !d.Player) return;
+    d3.select(this).transition().duration(100).attr('r', 9);
+    showTooltip(
+      `<div class="tt-name">${d.Player}</div>` +
+      `Team: ${d.Tm}<br>` +
+      `<span style="color:#457b9d">Raw Composite: ${d.Composite_pctl}</span><br>` +
+      `<span style="color:${COLORS.red}">Final Score: ${d.Final_Score}</span><br>` +
+      `Δ: ${(d.Final_Score - d.Composite_pctl) >= 0 ? '+' : ''}${(d.Final_Score - d.Composite_pctl).toFixed(1)}`,
+      event
+    );
+  })
+  .on('mousemove', moveTooltip)
+  .on('mouseout', function() {
+    d3.select(this).transition().duration(100).attr('r', 7);
+    hideTooltip();
   });
 }
 
 /* =============================================
-   VIZ 4: LINE CHART (D3)
+   VIZ 5: LINE CHART (D3)
    Season consistency — Game Score rolling avg
    ============================================= */
 function drawLine() {
@@ -560,7 +609,6 @@ function drawLine() {
     const hovDate = x.invert(mx);
     hoverLine.attr('x1', mx).attr('x2', mx).style('opacity', 1);
 
-    // Find nearest data point per visible player
     let html = `<div style="font-size:9px;color:${COLORS.dim};margin-bottom:4px">${fmtDate(hovDate)}</div>`;
     players.forEach((p, pi) => {
       if (!visible[p]) return;
@@ -578,7 +626,7 @@ function drawLine() {
 }
 
 /* =============================================
-   VIZ 5: HEATMAP (D3)
+   VIZ 6: HEATMAP (D3)
    Percentile breakdown for top 15
    ============================================= */
 function drawHeatmap() {
@@ -599,7 +647,7 @@ function drawHeatmap() {
 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-  // Color scale: 0=red, 50=yellow, 100=green
+  // Color scale
   const colorScale = d3.scaleSequential()
     .domain([0, 100])
     .interpolator(d3.interpolateRgbBasis(['#7B0000','#C62828','#EF9A9A','#FFF176','#A5D6A7','#2E7D32']));
@@ -621,7 +669,6 @@ function drawHeatmap() {
 
   // Cells
   players.forEach((player, pi) => {
-    // Row label
     g.append('text').attr('x', -8).attr('y', pi * cellH + cellH / 2 + 4)
       .attr('text-anchor', 'end').text(player)
       .style('fill', player === 'Nikola Jokić' ? COLORS.gold : COLORS.text)
@@ -652,14 +699,14 @@ function drawHeatmap() {
 
   // Hover for cells
   g.selectAll('rect')
-    .on('mouseover', function(event) {
+    .on('mouseover', function() {
       d3.select(this).attr('stroke', COLORS.gold).attr('stroke-width', 2);
     })
     .on('mouseout', function() {
       d3.select(this).attr('stroke', 'none');
     });
 
-  // Add subtle row highlight on player hover
+  // Row hover tooltip
   players.forEach((player, pi) => {
     g.append('rect')
       .attr('x', 0).attr('y', pi * cellH)
@@ -707,6 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
   drawBar();
   drawRadar();
   drawScatter();
+  drawDumbbell();
   drawLine();
   drawHeatmap();
 });

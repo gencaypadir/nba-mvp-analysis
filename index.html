@@ -16,7 +16,7 @@
   <header class="hero">
     <div class="hero-bg"></div>
     <div class="hero-content">
-      <div class="hero-eyebrow">DS4200 · Data Analysis &amp; Visualization</div>
+      <div class="hero-eyebrow">DS4200 · Information Presentation and Data Visualization</div>
       <h1 class="hero-title">THE<br><span class="accent">"REAL"</span><br>MVP</h1>
       <p class="hero-sub">Who was truly the best player in the 2024–25 NBA season?<br>We remove the bias, run the numbers, and let the data decide.</p>
       <div class="hero-stats-row">
@@ -40,7 +40,7 @@
         <h2 class="section-title">The Question</h2>
         <div class="two-col">
           <div>
-            <p>Shai Gilgeous-Alexander won the 2025 Kia NBA MVP award — but was he truly the best player of the season? Many analysts and fans argued Nikola Jokić deserved the honor, with others pointing to breakout performances across the league.</p>
+            <p>Shai Gilgeous-Alexander won the 2025 Kia NBA MVP award, but was he truly the best player of the season? Many analysts and fans argued Nikola Jokić deserved the honor, with others pointing to breakout performances across the league.</p>
             <p>This project strips away narratives, media hype, and voting bias to find the <em>statistically</em> best player of the 2024–25 season. We built a composite scoring system using per-game averages, percentile rankings, strength-of-schedule adjustments, and minutes weighting to produce an objective final ranking.</p>
           </div>
           <div>
@@ -49,7 +49,7 @@
               <li>Rank all 569 NBA players by composite statistical performance</li>
               <li>Adjust scores for strength of schedule and playing time</li>
               <li>Visualize the top candidates across multiple stat dimensions</li>
-              <li>Track performance consistency across the full season</li>
+              <li>Track performance consistency across the season</li>
               <li>Reveal who the data says is the "Real MVP"</li>
             </ul>
           </div>
@@ -62,7 +62,7 @@
       <div class="container">
         <div class="section-label">02 · Dataset</div>
         <h2 class="section-title">The Data</h2>
-        <p class="section-intro">We used a publicly available NBA player game log dataset covering the full 2024–25 regular season, sourced from Kaggle and licensed under MIT. Each row represents a single player's performance in a single game.</p>
+        <p class="section-intro">We used a publicly available NBA player game log dataset from the 2024–25 regular season, sourced from Kaggle and licensed under MIT. The dataset covers <strong>October 22, 2024 through February 7, 2025</strong>, representing approximately <strong>60% of the regular season</strong>. Each row represents a single player's performance in a single game. While this partial-season snapshot does not capture late-season surges or slumps, it provides a robust sample of over 16,000 game logs for meaningful statistical analysis.</p>
         <div class="data-cards">
           <div class="data-card">
             <div class="data-card-num">16,512</div>
@@ -77,8 +77,8 @@
             <div class="data-card-label">Unique players</div>
           </div>
           <div class="data-card">
-            <div class="data-card-num">30</div>
-            <div class="data-card-label">NBA teams covered</div>
+            <div class="data-card-num">~60%</div>
+            <div class="data-card-label">Of the regular season covered</div>
           </div>
         </div>
         <p class="data-attrs"><strong>Key attributes include:</strong> Player, Team (Tm), Opponent (Opp), Result (Res), Minutes Played (MP), Field Goals (FG/FGA/FG%), Three-Pointers (3P/3PA/3P%), Free Throws (FT/FTA/FT%), Rebounds (ORB/DRB/TRB), Assists (AST), Steals (STL), Blocks (BLK), Turnovers (TOV), Personal Fouls (PF), Points (PTS), Game Score (GmSc), and Date.</p>
@@ -104,28 +104,49 @@
             <div class="step-num">1</div>
             <div class="step-body">
               <h3>Per-Game Averages</h3>
-              <p>Aggregated all game logs into per-game averages for 20 statistical categories per player. Filtered to players with ≥39 games played to ensure sample reliability.</p>
+              <p>We aggregated every game log into per-game averages across 20 statistical categories for each player, giving us a single row per player that represents their typical performance.</p>
             </div>
           </div>
           <div class="method-step">
             <div class="step-num">2</div>
             <div class="step-body">
               <h3>Percentile Ranking</h3>
-              <p>Converted each stat to a league-wide percentile (0–100). Turnovers and fouls were inverted — fewer is better. Averaged 15 key percentiles into a Composite Score.</p>
+              <p>Each player's averaged stats were converted into percentile ranks (0 to 100) across 15 key categories: shooting volume (FG, 3P, FT), shooting efficiency (FG%, 3P%, FT%), rebounds (ORB, DRB, TRB), assists, steals, blocks, turnovers, points, and game score. Turnovers were inverted so that fewer turnovers produce a higher percentile. These 15 percentiles were then averaged into a single Composite Score.</p>
             </div>
           </div>
           <div class="method-step">
             <div class="step-num">3</div>
             <div class="step-body">
-              <h3>Strength of Schedule</h3>
-              <p>Calculated each team's average opponent win percentage as a proxy for schedule difficulty. Applied a 15% weight to boost players who performed against harder competition.</p>
+              <h3>Games Played Filter</h3>
+              <p>We filtered to players with at least 39 games played, which represents 60% of the dataset's coverage. This removes small-sample outliers like players who appeared in only a handful of games and might have inflated or deflated stats.</p>
             </div>
           </div>
           <div class="method-step">
             <div class="step-num">4</div>
             <div class="step-body">
-              <h3>Minutes Weighting</h3>
-              <p>Players who log more minutes relative to their teammates bear greater responsibility. A 15% minutes factor rewarded high-usage players with a slight Final Score boost.</p>
+              <h3>Team Strength</h3>
+              <p>We calculated each team's win percentage using the actual game results in the dataset. This provides a straightforward measure of how good each team was during the period covered.</p>
+            </div>
+          </div>
+          <div class="method-step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h3>Strength of Schedule (SOS)</h3>
+              <p>For each team, we averaged the win percentages of every opponent they faced. A higher number means that team played against stronger opponents on average, while a lower number means an easier schedule.</p>
+            </div>
+          </div>
+          <div class="method-step">
+            <div class="step-num">6</div>
+            <div class="step-body">
+              <h3>SOS Adjustment (15% Weight)</h3>
+              <p>We divided each team's SOS by the league average SOS to get a ratio (the "SOS factor"). A team with a tougher-than-average schedule gets a factor above 1.0, while an easier schedule produces a factor below 1.0. We then blended this factor with a neutral value of 1.0 using a 15% weight: <strong>multiplier = 0.15 × SOS_factor + 0.85</strong>. This means 85% of the score stays untouched and only 15% is influenced by schedule difficulty. For example, a player on Toronto (hardest schedule, SOS factor ~1.09) gets roughly a 1.4% boost, while a player on New York (easiest schedule, SOS factor ~0.92) receives about a 1.2% penalty. The adjustment is deliberately small so it nudges scores without overpowering the raw stats.</p>
+            </div>
+          </div>
+          <div class="method-step">
+            <div class="step-num">7</div>
+            <div class="step-body">
+              <h3>Minutes Adjustment (15% Weight)</h3>
+              <p>We calculated each player's average minutes per game and divided it by their team's average minutes per player to get a "minutes factor." Starters who play 36 minutes on a team averaging 24 per player get a factor around 1.5, while a bench player at 12 minutes gets a factor around 0.5. Like the SOS adjustment, we blended this with a 15% weight: <strong>multiplier = 0.15 × MP_factor + 0.85</strong>. This gives starters a noticeable boost (a factor of 1.5 translates to roughly a 7.5% increase) and applies a similar penalty to low-minute players. The logic is simple: players who are on the court more carry greater responsibility and their stats reflect a larger role on their team.</p>
             </div>
           </div>
         </div>
@@ -137,11 +158,11 @@
       <div class="container">
         <div class="section-label">04 · Visualization 1</div>
         <h2 class="section-title">MVP Leaderboard</h2>
-        <p class="section-intro">Top 15 players ranked by Final Score — our composite metric incorporating per-game stats, percentile rankings, strength of schedule, and minutes weighting. Hover a bar for details.</p>
+        <p class="section-intro">Top 15 players ranked by Final Score, our composite metric incorporating per-game stats, percentile rankings, strength of schedule, and minutes weighting. Hover a bar for details.</p>
         <div class="chart-wrap" id="bar-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
-          <p>Nikola Jokić leads the ranking with a Final Score of <strong>92.6</strong>, notably ahead of SGA (89.2) — the actual MVP winner. Jokić's statistical dominance across all categories, combined with a moderate minutes load and above-average schedule difficulty, produced the highest composite score in the league. This gap raises a meaningful question: does the voters' emphasis on narrative and team record override pure statistical output?</p>
+          <div class="takeaway-label">Takeaway</div>
+          <p>Nikola Jokić leads the ranking with a Final Score of <strong>92.6</strong>, notably ahead of SGA (89.2), the actual MVP winner. Jokić's statistical dominance across all categories, combined with a moderate minutes load and above-average schedule difficulty, produced the highest composite score in the league. This gap raises a meaningful question: does the voters' emphasis on narrative and team record override pure statistical output?</p>
         </div>
       </div>
     </section>
@@ -154,8 +175,8 @@
         <p class="section-intro">Raw Composite percentile score vs. Final Score (after SOS and minutes adjustments) for the top 15 candidates. The blue dot is where a player started; the red dot is where they landed. Hover dots for details.</p>
         <div class="chart-wrap" id="dumbbell-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
-          <p>Most players see a modest boost from the SOS and minutes adjustments, but the effect is not uniform. Players on teams with harder schedules and higher relative minutes — like Jokić — gain the most. Players on weaker schedules see smaller gains or even slight drops. This chart makes the adjustment methodology transparent: the Final Score is not just a raw stat ranking, it reflects context.</p>
+          <div class="takeaway-label">Takeaway</div>
+          <p>Most players see a modest boost from the SOS and minutes adjustments, but the effect is not uniform. Players on teams with harder schedules and higher relative minutes, like Jokić, gain the most. Players on weaker schedules see smaller gains or even slight drops. This chart makes the adjustment methodology transparent: the Final Score is not just a raw stat ranking, it reflects context.</p>
         </div>
       </div>
     </section>
@@ -176,8 +197,8 @@
         </div>
         <div class="chart-wrap" id="radar-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
-          <p>Jokić's radar profile is uniquely balanced — elite across every dimension simultaneously. SGA dominates in scoring and steals but shows a comparatively weaker rebounding footprint. Wembanyama's profile reveals his truly unique archetype: elite blocks and rebounds, but lower shooting efficiency. No other player covers as much of the radar as Jokić.</p>
+          <div class="takeaway-label">Takeaway</div>
+          <p>Jokić's radar profile is uniquely balanced, showing elite performance across every dimension simultaneously. SGA dominates in scoring and steals but shows a comparatively weaker rebounding footprint. Wembanyama's profile reveals his truly unique archetype: elite blocks and rebounds, but lower shooting efficiency. No other player covers as much of the radar as Jokić.</p>
         </div>
       </div>
     </section>
@@ -196,8 +217,8 @@
           ></iframe>
         </div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
-          <p>The top scorers cluster in the upper-right quadrant — high volume and high efficiency — a rare combination. Jokić stands out with exceptional FG% relative to his attempt volume. Most elite scorers sacrifice some efficiency for volume, but the true MVP candidates manage to do both. The gray mass of players reveals how the top 10 genuinely separate themselves from the league.</p>
+          <div class="takeaway-label">Takeaway</div>
+          <p>The top scorers appear toward the right side of the chart, where high field goal attempts meet above-average efficiency. This is a rare combination: most players who shoot a lot see their percentage drop, but the true MVP candidates manage to maintain strong efficiency at high volume. Jokić stands out with exceptional FG% relative to his attempt rate. The gray mass of players to the left reveals just how much the top 10 separate themselves from the rest of the league.</p>
         </div>
       </div>
     </section>
@@ -207,11 +228,11 @@
       <div class="container">
         <div class="section-label">08 · Visualization 5</div>
         <h2 class="section-title">Season Consistency</h2>
-        <p class="section-intro">5-game rolling average of Game Score for the top 5 candidates across the full 2024–25 season. Toggle players on/off using the legend. The dashed line marks an All-Star level performance (~20 GmSc).</p>
+        <p class="section-intro">5-game rolling average of Game Score for the top 5 candidates across the 2024–25 season. Toggle players on/off using the legend. The dashed line marks an All-Star level performance (~20 GmSc).</p>
         <div class="chart-wrap" id="line-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
-          <p>Jokić and SGA both maintained elite Game Score averages for the majority of the season, but Jokić showed greater durability through the mid-season stretch. Wembanyama's volatility — high peaks and occasional dips — reflects the growing pains of a second-year player. Consistency above the All-Star line (20 GmSc) is one of the clearest separators between a great season and an MVP campaign.</p>
+          <div class="takeaway-label">Takeaway</div>
+          <p>Jokić and SGA both maintained elite Game Score averages for the majority of the season, but Jokić showed greater durability through the mid-season stretch. Wembanyama's volatility, with high peaks and occasional dips, reflects the growing pains of a second-year player. Consistency above the All-Star line (20 GmSc) is one of the clearest separators between a great season and an MVP campaign.</p>
         </div>
       </div>
     </section>
@@ -221,11 +242,12 @@
       <div class="container">
         <div class="section-label">09 · Visualization 6</div>
         <h2 class="section-title">Percentile Breakdown</h2>
-        <p class="section-intro">Comprehensive percentile heatmap for the top 15 candidates across 9 statistical categories. Green = elite (near 100th percentile), red = below average. Hover a cell for exact values.</p>
+        <p class="section-intro">Comprehensive percentile heatmap for the top 15 candidates across 9 statistical categories. Green = elite (near 100th percentile), red = below average among qualified players. Hover a row for exact values.</p>
         <div class="chart-wrap" id="heatmap-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
-          <p>The heatmap reveals the diversity of MVP archetypes. Jokić is nearly all green — the most complete profile. SGA dominates the scoring and steals columns but is more selective. Wembanyama's blocks column stands alone. The "Low TOV" column is particularly revealing: high turnover rates (red) tend to discount otherwise impressive offensive numbers. This visualization anchors the entire methodology by making every tradeoff visible at once.</p>
+          <div class="takeaway-label">Takeaway</div>
+          <p>The heatmap reveals the diversity of MVP archetypes. Jokić is nearly all green, showing the most complete statistical profile of any candidate. SGA dominates in scoring and steals but is more selective in other areas. Wembanyama's blocks column stands alone at 100th percentile.</p>
+          <p>The "Low TOV" column deserves special attention. This stat measures how <em>few</em> turnovers a player commits: a high percentile (green) means the player rarely turns the ball over, while a low percentile (red) means they give the ball away frequently. Most of the top 15 show red in this column because elite players tend to handle the ball more, which naturally leads to more turnovers. A player averaging 10 assists will inevitably have more turnovers than someone who rarely passes. So while the red looks alarming, it reflects the cost of being a high-usage playmaker rather than careless play.</p>
         </div>
       </div>
     </section>
@@ -238,23 +260,28 @@
         <div class="conclusion-grid">
           <div class="conclusion-card">
             <div class="conclusion-num">01</div>
-            <h3>Jokić is the statistical MVP — by a clear margin</h3>
-            <p>Across every composite measure we built — raw percentile, SOS-adjusted, and minutes-weighted — Nikola Jokić ranked first. His uniquely balanced statistical profile, elite efficiency, and performance against quality competition produced a Final Score 3.5 points ahead of the actual MVP winner. The data strongly supports the argument that the award should have gone to Denver.</p>
+            <h3>Jokić is the statistical MVP, by a clear margin</h3>
+            <p>Across every composite measure we built (raw percentile, SOS-adjusted, and minutes-weighted) Nikola Jokić ranked first. His uniquely balanced statistical profile, elite efficiency, and performance against quality competition produced a Final Score 3.5 points ahead of the actual MVP winner. The data strongly supports the argument that the award should have gone to Denver.</p>
           </div>
           <div class="conclusion-card">
             <div class="conclusion-num">02</div>
             <h3>Volume scoring alone does not predict MVP quality</h3>
-            <p>Several high-scoring guards ranked outside the top 10 once efficiency, rebounding, and schedule difficulty were factored in. The scatter plot confirms that points per game without efficiency is a misleading signal. True MVP candidates must balance volume with FG%, and contribute across multiple statistical dimensions rather than excelling in one.</p>
+            <p>Several high-scoring guards ranked outside the top 10 once efficiency, rebounding, and schedule difficulty were factored in. The scatter plot confirms that points per game without efficiency is a misleading signal. True MVP candidates must balance volume with FG% and contribute across multiple statistical dimensions rather than excelling in just one.</p>
           </div>
           <div class="conclusion-card">
             <div class="conclusion-num">03</div>
+            <h3>Context adjustments reveal hidden value</h3>
+            <p>The SOS and minutes adjustments, while deliberately subtle (15% weight each), meaningfully reshaped the rankings. Players like Cade Cunningham and Kyrie Irving saw some of the largest boosts (+6.5 and +6.6 points respectively) because they logged heavy starter minutes on their teams while facing above-average schedules. Meanwhile, players on teams with easier opponents saw smaller gains. These adjustments ensure that a dominant stat line against weak competition is valued differently than one earned against playoff-caliber teams, and that a starter carrying 36 minutes of responsibility is distinguished from a role player putting up numbers in limited action.</p>
+          </div>
+          <div class="conclusion-card">
+            <div class="conclusion-num">04</div>
             <h3>Wembanyama is the most unique player in the league</h3>
-            <p>Victor Wembanyama's percentile profile is unlike any other candidate — 100th percentile in blocks, 98th in rebounds, yet sub-80th in shooting efficiency. No existing MVP archetype maps cleanly onto him. As he develops his shooting, his composite score will likely surge. The data suggests he is already a top-5 player statistically, despite being only in his second season.</p>
+            <p>Victor Wembanyama's percentile profile is unlike any other candidate: 100th percentile in blocks, 98th in rebounds, yet below 80th in shooting efficiency. No existing MVP archetype maps cleanly onto him. As he develops his shooting, his composite score will likely surge. The data suggests he is already a top-5 player statistically, despite being only in his second season.</p>
           </div>
         </div>
         <div class="future-work">
           <h3>Limitations &amp; Future Work</h3>
-          <p>This analysis uses only the first half of the 2024–25 regular season (through the dataset's date range), which may not capture late-season performance surges. Future iterations could incorporate defensive metrics (DPOY voting data, defensive rating), playoff performance, and on/off court impact data to build a more comprehensive model. A machine learning approach — similar to the Samford University and Wharton studies referenced — could also weight statistical categories based on historical MVP voting patterns rather than equal weighting.</p>
+          <p>This analysis covers approximately 60% of the 2024–25 regular season (October 22, 2024 through February 7, 2025), which may not capture late-season performance surges or slumps. Future iterations could incorporate defensive metrics (DPOY voting data, defensive rating), playoff performance, and on/off court impact data to build a more comprehensive model. A machine learning approach, similar to the Samford University and Wharton studies referenced, could also weight statistical categories based on historical MVP voting patterns rather than equal weighting.</p>
         </div>
       </div>
     </section>
@@ -265,7 +292,7 @@
     <div class="container">
       <div class="footer-inner">
         <div class="footer-title">The "Real" MVP — DS4200</div>
-        <div class="footer-meta">Northeastern University · Spring 2025 · Data: Kaggle (MIT License)</div>
+        <div class="footer-meta">Northeastern University · Spring 2026 · Data: Kaggle (MIT License)</div>
       </div>
     </div>
   </footer>

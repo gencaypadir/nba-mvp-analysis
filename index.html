@@ -111,7 +111,7 @@
             <div class="step-num">2</div>
             <div class="step-body">
               <h3>Percentile Ranking</h3>
-              <p>Converted each stat to a percentile (0–100) within the qualified player pool. Rather than raw turnovers, we use <strong>TOV/AST ratio</strong> — turnovers relative to ball creation — so high-usage playmakers like Jokić aren't unfairly penalized for having the ball more. Averaged 15 key percentiles into a Composite Score.</p>
+              <p>Converted each stat to a league-wide percentile (0–100). Turnovers and fouls were inverted — fewer is better. Averaged 15 key percentiles into a Composite Score.</p>
             </div>
           </div>
           <div class="method-step">
@@ -201,11 +201,11 @@
       <div class="container">
         <div class="section-label">08 · Visualization 5</div>
         <h2 class="section-title">Percentile Breakdown</h2>
-        <p class="section-intro">Comprehensive percentile heatmap for the top 15 candidates across 9 statistical categories. <strong>TOV Eff</strong> = TOV/AST ratio percentile (higher = more efficient with the ball relative to usage). Green = elite, red = below average among qualified players. Hover a row for exact values.</p>
+        <p class="section-intro">Comprehensive percentile heatmap for the top 15 candidates across 9 statistical categories. Green = elite (near 100th percentile), red = below average. Hover a cell for exact values.</p>
         <div class="chart-wrap" id="heatmap-chart"></div>
         <div class="viz-takeaway">
           <div class="takeaway-label">📊 Takeaway</div>
-          <p>The heatmap reveals the diversity of MVP archetypes. Jokić is nearly all green — the most complete profile, and notably the highest TOV Efficiency (93rd percentile) because his 3 turnovers per game are generated in the context of 10+ assists. SGA dominates the scoring and steals columns. Wembanyama's blocks column stands alone at 100th percentile. KAT and Wemby show lower TOV Efficiency because they handle the ball less, meaning their turnovers aren't offset by playmaking. This visualization makes every tradeoff visible at once.</p>
+          <p>The heatmap reveals the diversity of MVP archetypes. Jokić is nearly all green — the most complete profile. SGA dominates the scoring and steals columns but is more selective. Wembanyama's blocks column stands alone. The "Low TOV" column is particularly revealing: high turnover rates (red) tend to discount otherwise impressive offensive numbers. This visualization anchors the entire methodology by making every tradeoff visible at once.</p>
         </div>
       </div>
     </section>

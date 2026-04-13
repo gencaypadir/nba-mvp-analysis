@@ -146,10 +146,24 @@
       </div>
     </section>
 
-    <!-- VIZ 2: RADAR (D3) -->
+    <!-- VIZ 2: DUMBBELL CHART (D3) -->
     <section class="section viz-section" id="viz2">
       <div class="container">
         <div class="section-label">05 · Visualization 2</div>
+        <h2 class="section-title">Score Adjustment Impact</h2>
+        <p class="section-intro">Raw Composite percentile score vs. Final Score (after SOS and minutes adjustments) for the top 15 candidates. The blue dot is where a player started; the red dot is where they landed. Hover dots for details.</p>
+        <div class="chart-wrap" id="dumbbell-chart"></div>
+        <div class="viz-takeaway">
+          <div class="takeaway-label">📊 Takeaway</div>
+          <p>Most players see a modest boost from the SOS and minutes adjustments, but the effect is not uniform. Players on teams with harder schedules and higher relative minutes — like Jokić — gain the most. Players on weaker schedules see smaller gains or even slight drops. This chart makes the adjustment methodology transparent: the Final Score is not just a raw stat ranking, it reflects context.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIZ 3: RADAR (D3) -->
+    <section class="section section-dark viz-section" id="viz3">
+      <div class="container">
+        <div class="section-label">06 · Visualization 3</div>
         <h2 class="section-title">Candidate Profiles</h2>
         <p class="section-intro">Percentile breakdown across 9 key statistical categories for the top 5 MVP candidates. Click a player name to isolate their profile. Outer ring = 100th percentile.</p>
         <div class="radar-controls">
@@ -168,13 +182,19 @@
       </div>
     </section>
 
-    <!-- VIZ 3: SCATTER (D3) -->
-    <section class="section section-dark viz-section" id="viz3">
+    <!-- VIZ 4: SCATTER (ALTAIR/VEGA-LITE) -->
+    <section class="section viz-section" id="viz4">
       <div class="container">
-        <div class="section-label">06 · Visualization 3</div>
+        <div class="section-label">07 · Visualization 4</div>
         <h2 class="section-title">Volume vs. Efficiency</h2>
-        <p class="section-intro">Field goal attempts per game vs. field goal percentage for all qualified players (≥39 games). Bubble size = points per game. Red bubbles = top 10 by Final Score. Hover for player details.</p>
-        <div class="chart-wrap" id="scatter-chart"></div>
+        <p class="section-intro">Field goal attempts per game vs. field goal percentage for all qualified players (≥39 games). Bubble size = points per game. Gold bubbles = top 10 by Final Score. Hover for player details.</p>
+        <div class="chart-wrap" id="scatter-chart">
+          <iframe
+            src="scatter_altair.html"
+            style="width:100%; height:500px; border:none; display:block;"
+            title="Volume vs Efficiency scatter plot"
+          ></iframe>
+        </div>
         <div class="viz-takeaway">
           <div class="takeaway-label">📊 Takeaway</div>
           <p>The top scorers cluster in the upper-right quadrant — high volume and high efficiency — a rare combination. Jokić stands out with exceptional FG% relative to his attempt volume. Most elite scorers sacrifice some efficiency for volume, but the true MVP candidates manage to do both. The gray mass of players reveals how the top 10 genuinely separate themselves from the league.</p>
@@ -182,10 +202,10 @@
       </div>
     </section>
 
-    <!-- VIZ 4: LINE CHART (D3) -->
-    <section class="section viz-section" id="viz4">
+    <!-- VIZ 5: LINE CHART (D3) -->
+    <section class="section section-dark viz-section" id="viz5">
       <div class="container">
-        <div class="section-label">07 · Visualization 4</div>
+        <div class="section-label">08 · Visualization 5</div>
         <h2 class="section-title">Season Consistency</h2>
         <p class="section-intro">5-game rolling average of Game Score for the top 5 candidates across the full 2024–25 season. Toggle players on/off using the legend. The dashed line marks an All-Star level performance (~20 GmSc).</p>
         <div class="chart-wrap" id="line-chart"></div>
@@ -196,10 +216,10 @@
       </div>
     </section>
 
-    <!-- VIZ 5: HEATMAP (D3) -->
-    <section class="section section-dark viz-section" id="viz5">
+    <!-- VIZ 6: HEATMAP (D3) -->
+    <section class="section viz-section" id="viz6">
       <div class="container">
-        <div class="section-label">08 · Visualization 5</div>
+        <div class="section-label">09 · Visualization 6</div>
         <h2 class="section-title">Percentile Breakdown</h2>
         <p class="section-intro">Comprehensive percentile heatmap for the top 15 candidates across 9 statistical categories. Green = elite (near 100th percentile), red = below average. Hover a cell for exact values.</p>
         <div class="chart-wrap" id="heatmap-chart"></div>
@@ -211,9 +231,9 @@
     </section>
 
     <!-- CONCLUSION -->
-    <section class="section" id="conclusion">
+    <section class="section section-dark" id="conclusion">
       <div class="container">
-        <div class="section-label">09 · Findings</div>
+        <div class="section-label">10 · Findings</div>
         <h2 class="section-title">What the Data Says</h2>
         <div class="conclusion-grid">
           <div class="conclusion-card">

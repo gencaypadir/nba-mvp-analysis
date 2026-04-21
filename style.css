@@ -16,8 +16,8 @@
   --surface: #222428;
   --border: rgba(255,255,255,0.08);
   --text: #F0F0F0;
-  --text-muted: #8A8D93;
-  --text-dim: #5A5D63;
+  --text-muted: #B0B3B8;
+  --text-dim: #7A7D83;
   --font-display: 'Bebas Neue', sans-serif;
   --font-body: 'DM Sans', sans-serif;
   --font-mono: 'DM Mono', monospace;
@@ -316,7 +316,53 @@ body {
 .chart-wrap svg { display: block; width: 100%; }
 .chart-wrap canvas { display: block; }
 
-/* Radar controls */
+/* ---- BAR CHART TOGGLE ---- */
+.bar-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.bar-toggle-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.bar-toggle-btn:hover,
+.bar-toggle-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(245,197,24,0.07);
+}
+
+/* ---- RADAR DROPDOWN ---- */
+.radar-dropdown-wrap {
+  margin-bottom: 1.5rem;
+}
+.radar-dropdown-wrap select {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  min-width: 250px;
+  appearance: auto;
+}
+.radar-dropdown-wrap select:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+/* ---- RADAR CONTROLS (legacy, kept for compatibility) ---- */
 .radar-controls {
   display: flex;
   flex-wrap: wrap;
@@ -342,10 +388,9 @@ body {
   background: rgba(245,197,24,0.07);
 }
 
-/* Viz takeaway */
+/* ---- VIZ TAKEAWAY ---- */
 .viz-takeaway {
   background: var(--bg-card);
-  border-left: 3px solid var(--gold);
   border: 1px solid var(--border);
   border-left: 3px solid var(--gold);
   padding: 1.5rem 1.75rem;
@@ -363,6 +408,9 @@ body {
   color: var(--text-muted);
   font-size: 0.95rem;
   line-height: 1.7;
+}
+.viz-takeaway p + p {
+  margin-top: 0.75rem;
 }
 .viz-takeaway strong { color: var(--text); }
 
@@ -461,4 +509,5 @@ body {
   .two-col, .method-steps, .conclusion-grid { grid-template-columns: 1fr; }
   .data-cards { grid-template-columns: repeat(2, 1fr); }
   .hero-stats-row { flex-wrap: wrap; }
+  .bar-toggle { flex-wrap: wrap; }
 }

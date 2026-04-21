@@ -29,11 +29,11 @@ const COLORS = {
 const PLAYER_COLORS = {
   'Nikola Jokić': '#F5C518',
   'Shai Gilgeous-Alexander': '#2a9d8f',
-  'Karl-Anthony Towns': '#f4a261',
+  'Karl-Anthony Towns': '#FF6B6B',
   'Victor Wembanyama': '#9b5de5',
-  'Nikola Vučević': '#457b9d'
+  'Nikola Vučević': '#00D4FF'
 };
-const TOP5_COLORS = ['#F5C518','#2a9d8f','#f4a261','#9b5de5','#457b9d'];
+const TOP5_COLORS = ['#F5C518','#2a9d8f','#FF6B6B','#9b5de5','#00D4FF'];
 
 const FONT_MONO = "'DM Mono', monospace";
 const FONT_BODY = "'DM Sans', sans-serif";
@@ -326,6 +326,11 @@ function drawRadar() {
 }
 
 /* =============================================
+   VIZ 4: SCATTER — Altair iframe in index.html
+   (scatter_altair.html — no JS needed here)
+   ============================================= */
+
+/* =============================================
    VIZ 5: LINE CHART — NO RAW DOTS, H2H, DISTINCT COLORS
    ============================================= */
 function drawLine() {
@@ -372,8 +377,9 @@ function drawLine() {
       g.append('line').attr('x1', x(d)).attr('x2', x(d)).attr('y1', 0).attr('y2', H)
         .attr('stroke', 'rgba(255,255,255,0.2)').attr('stroke-dasharray', '3,2').attr('stroke-width', 0.8);
       g.append('text').attr('x', x(d) - 3).attr('y', 10)
-        .text('vs ' + h.opponent).style('fill', '#aaa').style('font-family', FONT_MONO)
-        .style('font-size', '7px').attr('transform', `rotate(-90, ${x(d) - 3}, 10)`);
+        .text('vs ' + h.opponent).style('fill', '#ccc').style('font-family', FONT_MONO)
+        .style('font-size', '10px').style('font-weight', '500')
+        .attr('transform', `rotate(-90, ${x(d) - 3}, 10)`);
     });
   }
 
@@ -456,10 +462,11 @@ function drawHeatmap() {
   if (!el) return;
 
   const stats = ['PTS','FG%','3P%','AST','REB','STL','BLK','Good Poss %','GmSc'];
+  const statLabels = ['Points','Field Goal %','3-Point %','Assists','Rebounds','Steals','Blocks','Good Poss %','Game Score'];
   const players = TOP15.map(d => d.Player);
 
   const margin = { top: 40, right: 20, bottom: 40, left: 210 };
-  const cellW = 62, cellH = 36;
+  const cellW = 82, cellH = 36;
   const W = stats.length * cellW;
   const H = players.length * cellH;
 
@@ -468,10 +475,10 @@ function drawHeatmap() {
     .attr('preserveAspectRatio', 'xMinYMid meet');
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-  /* Sequential green colormap — higher = better for all stats */
+  /* Sequential green — darker = higher percentile = better */
   const colorScale = d3.scaleSequential()
     .domain([0, 100])
-    .interpolator(d3.interpolateRgbBasis(['#1a1a2e','#2d4a3e','#3d7a55','#5aad6e','#8fd18a','#c6f0a8']));
+    .interpolator(d3.interpolateRgbBasis(['#1a1a2e','#2a2a3a','#3d6b4f','#2d8a4e','#1b7a3d','#0f5c2e']));
 
   const lookup = {};
   HEATMAP_DATA.forEach(d => {
@@ -481,9 +488,9 @@ function drawHeatmap() {
 
   stats.forEach((s, i) => {
     g.append('text').attr('x', i * cellW + cellW / 2).attr('y', -12)
-      .attr('text-anchor', 'middle').text(s)
-      .style('fill', COLORS.muted).style('font-family', FONT_MONO).style('font-size', '10px')
-      .style('text-transform', 'uppercase').style('letter-spacing', '0.06em');
+      .attr('text-anchor', 'middle').text(statLabels[i])
+      .style('fill', COLORS.muted).style('font-family', FONT_MONO).style('font-size', '9px')
+      .style('text-transform', 'uppercase').style('letter-spacing', '0.04em');
   });
 
   players.forEach((player, pi) => {
@@ -504,7 +511,7 @@ function drawHeatmap() {
 
       g.append('text').attr('x', si * cellW + cellW / 2).attr('y', pi * cellH + cellH / 2 + 4)
         .attr('text-anchor', 'middle').text(Math.round(val))
-        .style('fill', val > 50 ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.6)')
+        .style('fill', val > 60 ? 'rgba(255,255,255,0.85)' : val > 30 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.4)')
         .style('font-family', FONT_MONO).style('font-size', '10px').style('font-weight', '500')
         .style('pointer-events', 'none');
     });

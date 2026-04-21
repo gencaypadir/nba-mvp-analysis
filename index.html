@@ -16,7 +16,7 @@
   <header class="hero">
     <div class="hero-bg"></div>
     <div class="hero-content">
-      <div class="hero-eyebrow">DS4200 · Information Presentation and Data Visualization</div>
+      <div class="hero-eyebrow">DS4200 · Information Presentation and Data Visualization<br>By: Jason Lo, Gencay Padir, and Teja Kalapatapu</div>
       <h1 class="hero-title">THE<br><span class="accent">"REAL"</span><br>MVP</h1>
       <p class="hero-sub">Who was truly the best player in the 2024–25 NBA season?<br>We remove the bias, run the numbers, and let the data decide.</p>
       <div class="hero-stats-row">
@@ -111,7 +111,8 @@
             <div class="step-num">2</div>
             <div class="step-body">
               <h3>Percentile Ranking</h3>
-              <p>Each player's averaged stats were converted into percentile ranks (0 to 100) across 15 key categories: shooting volume (FG, 3P, FT), shooting efficiency (FG%, 3P%, FT%), rebounds (ORB, DRB, TRB), assists, steals, blocks, Good Possession Rate, points, and game score. Good Possession Rate measures the percentage of a player's possessions that end productively rather than in a turnover, giving a fairer view of ball handling for high-usage players. These 15 percentiles were then averaged into a single Composite Score.</p>
+              <p>Each player's averaged stats were converted into percentile ranks (0 to 100) across 15 key categories: shooting volume (FG, 3P, FT), shooting efficiency (FG%, 3P%, FT%), rebounds (ORB, DRB, TRB), assists, steals, blocks, Good Possession Rate, points, and game score. These 15 percentiles were then averaged into a single Composite Score.</p>
+              <p><strong>A note on turnovers:</strong> Rather than using raw turnovers (which unfairly penalize high-usage playmakers), we created a <strong>Good Possession Rate</strong> metric. It measures what percentage of a player's total possessions (estimated as FGA + FTA/2 + AST + TOV) end productively rather than in a turnover. This means a player like Jokić, who commits turnovers but also creates far more assists and shots, is evaluated fairly against a role player with fewer turnovers but far less ball responsibility.</p>
             </div>
           </div>
           <div class="method-step">
@@ -158,8 +159,8 @@
         </div>
         <div class="chart-wrap" id="bar-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
-          <p>Nikola Jokić leads the ranking with a Final Score of <strong>92.6</strong>, notably ahead of SGA (89.2), the actual MVP winner. Jokić's statistical dominance across all categories, combined with a moderate minutes load and above-average schedule difficulty, produced the highest composite score in the league. This gap raises a meaningful question: does the voters' emphasis on narrative and team record override pure statistical output?</p>
+          <div class="takeaway-label">Takeaway</div>
+          <p>Nikola Jokić leads the ranking with a Final Score of <strong>97.0</strong>, notably ahead of SGA (94.0), the actual MVP winner. Jokić's statistical dominance across all categories, combined with a moderate minutes load and above-average schedule difficulty, produced the highest composite score in the league. This gap raises a meaningful question: does the voters' emphasis on narrative and team record override pure statistical output?</p>
         </div>
       </div>
     </section>
@@ -172,7 +173,7 @@
         <p class="section-intro">Raw Composite percentile score vs. Final Score (after SOS and minutes adjustments) for the top 15 candidates. The blue dot is where a player started; the red dot is where they landed. Hover dots for details.</p>
         <div class="chart-wrap" id="dumbbell-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
+          <div class="takeaway-label">Takeaway</div>
           <p>Most players see a modest boost from the SOS and minutes adjustments, but the effect is not uniform. Players on teams with harder schedules and higher relative minutes, like Jokić, gain the most. Players on weaker schedules see smaller gains or even slight drops. This chart makes the adjustment methodology transparent: the Final Score is not just a raw stat ranking, it reflects context.</p>
         </div>
       </div>
@@ -190,7 +191,7 @@
         </div>
         <div class="chart-wrap" id="radar-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
+          <div class="takeaway-label">Takeaway</div>
           <p>Jokić's radar profile is uniquely balanced, showing elite performance across every dimension simultaneously. SGA dominates in scoring and steals but shows a comparatively weaker rebounding footprint. Wembanyama's profile reveals his truly unique archetype: elite blocks and rebounds, but lower shooting efficiency. No other player covers as much of the radar as Jokić.</p>
         </div>
       </div>
@@ -205,12 +206,12 @@
         <div class="chart-wrap" id="scatter-chart">
           <iframe
             src="scatter_altair.html"
-            style="width:100%; height:500px; border:none; display:block;"
-            title="Volume vs Efficiency scatter plot"
+            style="width:100%; height:520px; border:none; display:block;"
+            title="Volume vs Efficiency scatter plot (Altair)"
           ></iframe>
         </div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
+          <div class="takeaway-label">Takeaway</div>
           <p>The top scorers appear toward the right side of the chart, where high field goal attempts meet above-average efficiency. This is a rare combination: most players who shoot a lot see their percentage drop, but the true MVP candidates manage to maintain strong efficiency at high volume. Jokić stands out with exceptional FG% relative to his attempt rate. The gray mass of players to the left reveals just how much the top 10 separate themselves from the rest of the league.</p>
         </div>
       </div>
@@ -224,7 +225,7 @@
         <p class="section-intro">5-game rolling average of Game Score for the top 5 candidates across the 2024–25 season. Toggle players on/off using the legend. The dashed line marks an All-Star level performance (~20 GmSc).</p>
         <div class="chart-wrap" id="line-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
+          <div class="takeaway-label">Takeaway</div>
           <p>Jokić and SGA both maintained elite Game Score averages for the majority of the season, but Jokić showed greater durability through the mid-season stretch. Wembanyama's volatility, with high peaks and occasional dips, reflects the growing pains of a second-year player. Consistency above the All-Star line (20 GmSc) is one of the clearest separators between a great season and an MVP campaign.</p>
         </div>
       </div>
@@ -238,7 +239,7 @@
         <p class="section-intro">Comprehensive percentile heatmap for the top 15 candidates across 9 statistical categories. All metrics follow a "higher is better" direction, with darker green indicating elite performance. Hover a row for exact values.</p>
         <div class="chart-wrap" id="heatmap-chart"></div>
         <div class="viz-takeaway">
-          <div class="takeaway-label">📊 Takeaway</div>
+          <div class="takeaway-label">Takeaway</div>
           <p>The heatmap reveals the diversity of MVP archetypes. Jokić is nearly all dark green, showing the most complete statistical profile of any candidate. SGA dominates in scoring and steals but is more selective in other areas. Wembanyama's blocks column stands alone at 100th percentile.</p>
           <p>The "Good Poss %" column measures what percentage of a player's possessions end productively (a shot, free throw, or assist) rather than in a turnover. This gives a fairer picture of ball handling than raw turnovers alone, since high-usage playmakers naturally touch the ball more. A player who creates 10 assists per game will inevitably turn it over more than someone who rarely passes, but their Good Possession Rate can still be elite because most of their touches lead to something productive.</p>
         </div>

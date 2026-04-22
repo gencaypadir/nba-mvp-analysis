@@ -337,7 +337,7 @@ function drawLine() {
   const el = document.getElementById('line-chart');
   if (!el) return;
 
-  const margin = { top: 80, right: 150, bottom: 60, left: 60 };
+  const margin = { top: 100, right: 150, bottom: 60, left: 60 };
   const W = Math.min(el.offsetWidth || 960, 1000) - margin.left - margin.right;
   const H = 360;
 
@@ -376,10 +376,11 @@ function drawLine() {
       if (!d) return;
       g.append('line').attr('x1', x(d)).attr('x2', x(d)).attr('y1', -5).attr('y2', H)
         .attr('stroke', 'rgba(255,255,255,0.15)').attr('stroke-dasharray', '3,2').attr('stroke-width', 0.8);
-      g.append('text').attr('x', x(d)).attr('y', -12)
+      g.append('text').attr('x', x(d)).attr('y', -15)
         .text('vs ' + h.opponent).style('fill', '#ccc').style('font-family', FONT_MONO)
         .style('font-size', '9px').style('font-weight', '500')
-        .attr('text-anchor', 'middle');
+        .attr('text-anchor', 'end')
+        .attr('transform', `rotate(-45, ${x(d)}, -15)`);
     });
   }
 

@@ -337,7 +337,7 @@ function drawLine() {
   const el = document.getElementById('line-chart');
   if (!el) return;
 
-  const margin = { top: 100, right: 150, bottom: 60, left: 60 };
+  const margin = { top: 60, right: 150, bottom: 60, left: 60 };
   const W = Math.min(el.offsetWidth || 960, 1000) - margin.left - margin.right;
   const H = 360;
 

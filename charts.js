@@ -337,7 +337,7 @@ function drawLine() {
   const el = document.getElementById('line-chart');
   if (!el) return;
 
-  const margin = { top: 20, right: 150, bottom: 60, left: 60 };
+  const margin = { top: 80, right: 150, bottom: 60, left: 60 };
   const W = Math.min(el.offsetWidth || 960, 1000) - margin.left - margin.right;
   const H = 360;
 
@@ -365,21 +365,21 @@ function drawLine() {
   g.selectAll('.domain').remove();
 
   g.append('line').attr('x1', 0).attr('y1', y(20)).attr('x2', W).attr('y2', y(20))
-    .attr('stroke', 'rgba(255,255,255,0.15)').attr('stroke-dasharray', '6,4').attr('stroke-width', 1);
+    .attr('stroke', 'rgba(245,197,24,0.35)').attr('stroke-dasharray', '8,6').attr('stroke-width', 1.5);
   g.append('text').attr('x', W + 6).attr('y', y(20) + 4)
-    .text('All-Star ~20').style('fill', COLORS.dim).style('font-family', FONT_MONO).style('font-size', '9px');
+    .text('All-Star ~20').style('fill', 'rgba(245,197,24,0.5)').style('font-family', FONT_MONO).style('font-size', '9px');
 
   /* --- Head-to-head markers for Jokić --- */
   if (typeof H2H_DATES !== 'undefined') {
     H2H_DATES.forEach(h => {
       const d = parseDate(h.date);
       if (!d) return;
-      g.append('line').attr('x1', x(d)).attr('x2', x(d)).attr('y1', 0).attr('y2', H)
-        .attr('stroke', 'rgba(255,255,255,0.2)').attr('stroke-dasharray', '3,2').attr('stroke-width', 0.8);
-      g.append('text').attr('x', x(d) - 3).attr('y', 10)
+      g.append('line').attr('x1', x(d)).attr('x2', x(d)).attr('y1', -5).attr('y2', H)
+        .attr('stroke', 'rgba(255,255,255,0.15)').attr('stroke-dasharray', '3,2').attr('stroke-width', 0.8);
+      g.append('text').attr('x', x(d)).attr('y', -12)
         .text('vs ' + h.opponent).style('fill', '#ccc').style('font-family', FONT_MONO)
-        .style('font-size', '10px').style('font-weight', '500')
-        .attr('transform', `rotate(-90, ${x(d) - 3}, 10)`);
+        .style('font-size', '9px').style('font-weight', '500')
+        .attr('text-anchor', 'middle');
     });
   }
 
